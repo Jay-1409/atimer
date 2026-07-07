@@ -9,6 +9,7 @@ import (
 )
 
 func (t *Timer) StartServer(addr string) error {
+
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/api", func(w http.ResponseWriter, r *http.Request) {
@@ -39,9 +40,11 @@ func (t *Timer) StartServer(addr string) error {
 		}
 
 		heapID := t.AddTask(task)
+
 		log.Printf("Routed task %s to heap %d (expires in %ds)", task.ID, heapID, fireInSec)
 
 		w.Header().Set("Content-Type", "text/plain")
+
 		fmt.Fprintf(w, "success: routed to heap %d\n", heapID)
 	})
 
@@ -51,5 +54,6 @@ func (t *Timer) StartServer(addr string) error {
 	}
 
 	log.Printf("Listening for HTTP API requests on %s...", addr)
+
 	return server.ListenAndServe()
 }
