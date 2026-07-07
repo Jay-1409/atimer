@@ -2,6 +2,7 @@ package timer
 
 import (
 	"container/heap"
+	"log"
 	"sync"
 	"time"
 )
@@ -9,10 +10,11 @@ import (
 type TimerTaskHeap []*TimerTask
 
 type TimerHeap struct {
-	ID          int
-	Tasks       TimerTaskHeap
-	MaxTaskSize int
-	mu          sync.Mutex
+	ID           int
+	Tasks        TimerTaskHeap
+	MaxTaskSize  int
+	mu           sync.Mutex
+	EventHandler *TimerEventHandler
 }
 
 func NewTimerHeap(id int, queueSize int) *TimerHeap {
@@ -125,6 +127,9 @@ func (t *TimerHeap) FireExpired() {
 		}
 		expired := t.PopTask()
 		t.mu.Unlock()
-		println("fired task", expired.ID, "from heap: ", t.ID)
+		log.Printf("fired task %s from heap: %d", expired.ID, t.ID)
+		if t.EventHandler != nil {
+			t.EventHandler.Dispatch(expired)
+		}
 	}
 }

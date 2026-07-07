@@ -8,6 +8,9 @@ import (
 
 func main() {
 	log.Println("Starting atimer...")
-	t := timer.NewTimer(4, 1024)
-	log.Printf("Initialized timer with %d heaps", len(t.Heaps))
+	handler := timer.NewTimerEventHandler("main-handler", 1024, 4)
+	handler.Handler() // Start worker goroutines
+
+	t := timer.NewTimer(4, 1024, handler)
+	log.Printf("Initialized timer with %d heaps and handler %s", len(t.Heaps), handler.ID)
 }
