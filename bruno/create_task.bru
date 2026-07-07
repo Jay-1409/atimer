@@ -1,0 +1,17 @@
+meta {
+  name: Create Task
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:8080/api
+  body: form-urlencoded
+  auth: none
+}
+
+body:form-urlencoded {
+  id: task123
+  timer_time: 10
+  callback_url: http://example.com/callback
+}
