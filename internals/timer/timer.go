@@ -1,7 +1,10 @@
 package timer
 
+import "sync/atomic"
+
 type Timer struct {
-	Heaps []*TimerHeap
+	Heaps         []*TimerHeap
+	nextHeapIndex uint32
 }
 
 func NewTimer(heapCount int, queueSize int) *Timer {
@@ -10,6 +13,7 @@ func NewTimer(heapCount int, queueSize int) *Timer {
 		h := NewTimerHeap(i, queueSize)
 		timer.Heaps = append(timer.Heaps, h)
 	}
+	timer.nextHeapIndex = 0;
 	return timer
 }
 
@@ -17,4 +21,17 @@ func (t *Timer) Start() {
 	for _, h := range t.Heaps {
 		go h.Run()
 	}
+}
+
+/**
+	Round robin load balancing on the heaps and returns the chosen heap id
+	We are using cpu instructions for adding 1 thus we dont need to worry about
+	sync here.
+*/
+func (t *Timer) AddTask(task *TimerTask) int {
+	idx := atomic.AddUint32(&t.nextHeapIndex, 1)
+	curHeapIndex := int(idx % uint32(len(t.Heaps)))
+	chosenHeap := t.Heaps[curHeapIndex]
+	chosenHeap.AddTask(task)
+	return chosenHeap.ID
 }
