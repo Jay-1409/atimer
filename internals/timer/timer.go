@@ -1,18 +1,20 @@
 package timer
 
 type Timer struct {
-	Heaps        []*TimerHeap
-	EventHandler *TimerEventHandler
+	Heaps []*TimerHeap
 }
 
-func NewTimer(heapCount int, queueSize int, eventHandler *TimerEventHandler) *Timer {
-	timer := &Timer{
-		EventHandler: eventHandler,
-	}
+func NewTimer(heapCount int, queueSize int) *Timer {
+	timer := &Timer{}
 	for i := 0; i < heapCount; i = i + 1 {
 		h := NewTimerHeap(i, queueSize)
-		h.EventHandler = eventHandler
 		timer.Heaps = append(timer.Heaps, h)
 	}
 	return timer
+}
+
+func (t *Timer) Start() {
+	for _, h := range t.Heaps {
+		go h.Run()
+	}
 }
