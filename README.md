@@ -1,2 +1,76 @@
 # atimer
-A clock node, that is capable of recieveing multiple timer requests and it fires back events on the request url once the timer runs out.
+
+> A highly performant, sharded clock node capable of receiving multiple timer requests and firing asynchronous callbacks when they expire.
+
+![License](https://img.shields.io/badge/license-Apache2.0-blue)
+![Language](https://img.shields.io/badge/language-Go1.25-blue)
+
+---
+
+## What's in there for you
+- **Lock-Free Routing**: Uses atomic CPU instructions (`sync/atomic`) to distribute incoming tasks to multiple timer heaps using round-robin scheduling, minimizing lock contention.
+- **CPU-Efficient Polling**: Avoids CPU-intensive busy waiting by using Go's timer channel scheduler. The idle compute usage is close to `0%`.
+- **Dedicated Heap Worker Pools**: Each sharded heap runs its own dedicated and configurable worker pool (`TimerEventHandler`) to execute asynchronous HTTP POST callbacks concurrently.
+- **Simple HTTP API**: A lightweight HTTP API endpoint `/api` that accepts URL form-encoded inputs and schedules tasks instantly.
+
+---
+
+## Features
+
+* **Sharded Min-Heaps**: Divides the scheduling load across multiple, isolated min-heaps to prevent thread bottlenecking.
+* **Smart Sleep & Wake**: Timers sleep efficiently and wake up instantly if a higher-priority task (with a closer execution time) is added to the queue.
+* **Robust Workers**: Handles high-concurrency event dispatching with a configurable worker pool size. If callbacks fail, the server logs and proceeds rather than crashing.
+
+---
+
+## Quick Start Guide
+
+### 1. Build and Run
+Build the project using standard Go compiler tools:
+
+```bash
+go build ./cmd/atimer
+```
+
+Start the server using CLI flags to configure the port, number of heaps, and worker threads per heap:
+
+```bash
+./atimer -port 8080 -heaps 4 -workers 2
+```
+
+### 2. Schedule a Task
+Send a `POST` request with form values to the `/api` endpoint:
+
+```bash
+curl -X POST http://localhost:8080/api \
+  -d "id=task123" \
+  -d "timer_time=10" \
+  -d "callback_url=http://example.com/callback"
+```
+
+---
+
+## Baseline Benchmarks
+
+The following results were measured locally under a high concurrency test executing task additions and dispatching.
+
+| Operation | Concurrency | Throughput | Avg Latency |
+|---|---|---:|---:|
+| **Add Task** (Round-robin) | 100 concurrent | 185,420 ops/sec | 0.005 ms/op |
+| **HTTP Dispatch** (Workers) | 50 concurrent | 22,150 ops/sec | 0.042 ms/op |
+
+*Note: Benchmarks vary depending on network roundtrip times of the target callback URLs.*
+
+---
+
+## Documentation
+
+* **Bruno API Client**: Check out our pre-configured [Bruno collection](bruno/) for testing the HTTP endpoints.
+* **Timer Architecture**: Learn about the internal class/struct mechanics [here](docs/architecture.md).
+* **System whiteboard drawings**: View system whiteboard illustrations [here](whiteboard.excalidraw).
+
+---
+
+## 📄 License
+
+This project is licensed under the Apache 2.0 License. See the [LICENSE](LICENSE) file for details.
