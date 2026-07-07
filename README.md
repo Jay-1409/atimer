@@ -65,9 +65,11 @@ The following results were measured locally under a high concurrency test execut
 
 ## Documentation
 
-* **Bruno API Client**: Check out our pre-configured [Bruno collection](bruno/) for testing the HTTP endpoints.
-* **Timer Architecture**: Learn about the internal class/struct mechanics [here](docs/architecture.md).
-* **System whiteboard drawings**: View system whiteboard illustrations [here](whiteboard.excalidraw).
+- API Endpoint reference [here](docs/endpoints.md)
+- Timer Architecture details [here](docs/architecture.md)
+- How to run benchmarks [here](docs/benchmarking.md)
+- Bruno collection [here](bruno/)
+- System whiteboard drawings (excalidraw) [here](whiteboard.excalidraw)
 
 ---
 
