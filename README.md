@@ -8,18 +8,18 @@
 ---
 
 ## What's in there for you
-- **Lock-Free Routing**: Uses atomic CPU instructions (`sync/atomic`) to distribute incoming tasks to multiple timer heaps using round-robin scheduling, minimizing lock contention.
-- **CPU-Efficient Polling**: Avoids CPU-intensive busy waiting by using Go's timer channel scheduler. The idle compute usage is close to `0%`.
-- **Dedicated Heap Worker Pools**: Each sharded heap runs its own dedicated and configurable worker pool (`TimerEventHandler`) to execute asynchronous HTTP POST callbacks concurrently.
-- **Simple HTTP API**: A lightweight HTTP API endpoint `/api` that accepts URL form-encoded inputs and schedules tasks instantly.
+- **High Concurrency Routing**: Automatically distributes incoming tasks across multiple internal queues so the service never bottlenecks or slows down under high load.
+- **Ultra-Low Resource Overhead**: Runs with near-zero CPU and battery usage when idle, without compromising on trigger accuracy or response speed.
+- **Dedicated Worker Pools**: Processes and executes task callbacks concurrently using dedicated, isolated worker threads.
+- **Simple HTTP API**: A lightweight HTTP API endpoint `/api` that accepts standard URL form-encoded inputs to schedule timers instantly.
 
 ---
 
 ## Features
 
-* **Sharded Min-Heaps**: Divides the scheduling load across multiple, isolated min-heaps to prevent thread bottlenecking.
-* **Smart Sleep & Wake**: Timers sleep efficiently and wake up instantly if a higher-priority task (with a closer execution time) is added to the queue.
-* **Robust Workers**: Handles high-concurrency event dispatching with a configurable worker pool size. If callbacks fail, the server logs and proceeds rather than crashing.
+* **High-Throughput Scheduling**: Handles thousands of concurrent active timers smoothly by load-balancing them internally.
+* **Instant Rescheduling**: Automatically re-prioritizes execution times on the fly whenever a task with a closer expiration time is scheduled.
+* **Fault-Tolerant Callback Delivery**: Safely handles network failures or timeouts from target callback URLs, ensuring failed notifications never crash or halt the server.
 
 ---
 
