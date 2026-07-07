@@ -21,6 +21,12 @@
 
 ---
 
+## Use Cases
+
+- **Serverless Apps**: Pings serverless functions (like AWS Lambda or Vercel) that cannot run background timers.
+
+---
+
 ## Quick Start Guide
 ### 0. Clone the project if not already done.
 ### 1. Build and Run
