@@ -69,8 +69,8 @@ The following results were measured locally under a high concurrency test execut
 - Timer Architecture details [here](docs/architecture.md)
 - How to run benchmarks [here](docs/benchmarking.md)
 - Bruno collection [here](bruno/)
-- System whiteboard drawings (excalidraw) [here](whiteboard.excalidraw)
-
+- System whiteboard drawings (excalidraw) [here](docs/whiteboard.excalidraw)
+- Just a journal about this project [here](docs/journal.md)
 ---
 
 ## 📄 License
