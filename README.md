@@ -18,8 +18,6 @@
 ## Features
 
 * **High-Throughput Scheduling**: Handles thousands of concurrent active timers smoothly by load-balancing them internally.
-* **Instant Rescheduling**: Automatically re-prioritizes execution times on the fly whenever a task with a closer expiration time is scheduled.
-* **Fault-Tolerant Callback Delivery**: Safely handles network failures or timeouts from target callback URLs, ensuring failed notifications never crash or halt the server.
 
 ---
 
