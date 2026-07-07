@@ -50,24 +50,10 @@ curl -X POST http://localhost:8080/api \
 
 ---
 
-## Baseline Benchmarks
-
-The following results were measured locally under a high concurrency test executing task additions and dispatching.
-
-| Operation | Concurrency | Throughput | Avg Latency |
-|---|---|---:|---:|
-| **Add Task** (Round-robin) | 100 concurrent | 185,420 ops/sec | 0.005 ms/op |
-| **HTTP Dispatch** (Workers) | 50 concurrent | 22,150 ops/sec | 0.042 ms/op |
-
-*Note: Benchmarks vary depending on network roundtrip times of the target callback URLs.*
-
----
-
 ## Documentation
 
 - API Endpoint reference [here](docs/endpoints.md)
 - Timer Architecture details [here](docs/architecture.md)
-- How to run benchmarks [here](docs/benchmarking.md)
 - Bruno collection [here](bruno/)
 - System whiteboard drawings (excalidraw) [here](docs/whiteboard.excalidraw)
 - Just a journal about this project [here](docs/journal.md)
