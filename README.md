@@ -9,7 +9,7 @@
 
 ## What's in there for you
 - **Automated Callbacks**: Schedules task timers and automatically pings your server when they expire.
-- **CPU & Battery Friendly**: Runs efficiently with near-zero computer resource usage while waiting for timers to expire.
+- **CPU & Battery Friendly**: Runs very efficiently 
 - **Reliable Handling**: Capable of keeping track of many active timers at the same time.
 - **Simple API**: Set up and trigger a timer using a single HTTP request.
 
