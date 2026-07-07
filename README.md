@@ -8,10 +8,10 @@
 ---
 
 ## What's in there for you
-- **High Concurrency Routing**: Automatically distributes incoming tasks across multiple internal queues so the service never bottlenecks or slows down under high load.
-- **Ultra-Low Resource Overhead**: Runs with near-zero CPU and battery usage when idle, without compromising on trigger accuracy or response speed.
-- **Dedicated Worker Pools**: Processes and executes task callbacks concurrently using dedicated, isolated worker threads.
-- **Simple HTTP API**: A lightweight HTTP API endpoint `/api` that accepts standard URL form-encoded inputs to schedule timers instantly.
+- **Automated Callbacks**: Schedules task timers and automatically pings your server when they expire.
+- **CPU & Battery Friendly**: Runs efficiently with near-zero computer resource usage while waiting for timers to expire.
+- **Reliable Handling**: Capable of keeping track of many active timers at the same time.
+- **Simple API**: Set up and trigger a timer using a single HTTP request.
 
 ---
 
@@ -22,7 +22,7 @@
 ---
 
 ## Quick Start Guide
-
+### 0. Clone the project if not already done.
 ### 1. Build and Run
 Build the project using standard Go compiler tools:
 
