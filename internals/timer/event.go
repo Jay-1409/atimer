@@ -9,13 +9,16 @@ import (
 )
 
 type TimerEventHandler struct {
-	ID          string
+	ID          int
 	EventQueue  chan *TimerTask
 	WorkerCount int
 	Client      *http.Client
 }
 
-func NewTimerEventHandler(id string, queueSize int, workerCount int) *TimerEventHandler {
+/** 
+	The timer event handler will inherit the same id as of the heap that it is an event handler for. 
+*/
+func NewTimerEventHandler(id int, queueSize int, workerCount int) *TimerEventHandler {
 	return &TimerEventHandler{
 		ID:          id,
 		EventQueue:  make(chan *TimerTask, queueSize),
