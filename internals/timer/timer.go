@@ -7,13 +7,13 @@ type Timer struct {
 	nextHeapIndex uint32
 }
 
-func NewTimer(heapCount int, queueSize int) *Timer {
+func NewTimer(heapCount int, queueSize int, workerCount int) *Timer {
 	timer := &Timer{}
 	for i := 0; i < heapCount; i = i + 1 {
-		h := NewTimerHeap(i, queueSize)
+		h := NewTimerHeap(i, queueSize, workerCount)
 		timer.Heaps = append(timer.Heaps, h)
 	}
-	timer.nextHeapIndex = 0;
+	timer.nextHeapIndex = 0
 	return timer
 }
 
