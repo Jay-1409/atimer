@@ -15,17 +15,19 @@ type TimerHeap struct {
 	MaxTaskSize  int
 	mu           sync.Mutex
 	EventHandler *TimerEventHandler
+	taskAdded    chan struct{} // Channel to signal new task arrivals
 }
 
-func NewTimerHeap(id int, queueSize int) *TimerHeap {
+func NewTimerHeap(id int, queueSize int, workerCount int) *TimerHeap {
 	t := &TimerHeap{
 		ID:          id,
 		Tasks:       make(TimerTaskHeap, 0, queueSize),
 		MaxTaskSize: queueSize,
+		taskAdded:   make(chan struct{}, 1),
 	}
 
 	heap.Init(&t.Tasks)
-	t.EventHandler = NewTimerEventHandler(id, 1024, 2)
+	t.EventHandler = NewTimerEventHandler(id, 1024, workerCount)
 	t.EventHandler.Handler()
 	return t
 }
@@ -64,11 +66,21 @@ func (h TimerTaskHeap) Peek() *TimerTask {
 }
 
 func (t *TimerHeap) AddTask(task *TimerTask) bool {
+	t.mu.Lock()
 	if t.Tasks.Len() >= t.MaxTaskSize {
+		t.mu.Unlock()
 		return false
 	}
 
 	heap.Push(&t.Tasks, task)
+	t.mu.Unlock()
+
+	// Notify the runner loop that a new task was added
+	select {
+	case t.taskAdded <- struct{}{}:
+	default:
+	}
+
 	return true
 }
 
@@ -84,35 +96,42 @@ func (t *TimerHeap) PopTask() *TimerTask {
 	return heap.Pop(&t.Tasks).(*TimerTask)
 }
 
-/*
-*
-
-	Wait until the top most task reaches its completion state
-	TODO: Implement something better than just polling.
-
-	The reason for this busy wait is, that if a timer task hits us, and it's to be fired before the next fire candidate in our queue
-	in that case, if we are to go into sleep we would delay the firing of this new task.
-
-	We need something smarter than just random sleep time.
+/**
+	Wait until the top-most task reaches its completion state.
+	Uses channels to sleep efficiently and wake up early if a new task arrives.
 */
 func (t *TimerHeap) Run() {
 	for {
+		t.mu.Lock()
 		next := t.PeekTask()
+		t.mu.Unlock()
 
 		if next == nil {
-			// the heap is empty
+			// No tasks: sleep efficiently until a new task is added
+			<-t.taskAdded
 			continue
 		}
-		for time.Until(next.FireAt) > 0 {
-			// busy wait
+
+		duration := time.Until(next.FireAt)
+		if duration <= 0 {
+			t.FireExpired()
+			continue
 		}
-		t.FireExpired()
+
+		// Sleep efficiently but wake up early if a new task arrives
+		timer := time.NewTimer(duration)
+		select {
+		case <-timer.C:
+			// Task is ready to fire
+			t.FireExpired()
+		case <-t.taskAdded:
+			// A new task was added; stop the timer and re-evaluate the top task
+			timer.Stop()
+		}
 	}
 }
 
-/*
-*
-
+/**
 	While we start firing one task it is possible that there are multiple timers that exist at small timer intervals
 	Lets call this as TASK FLOODING. The synchronous nature of this function allows us to fire all of such timers before returning to the heap.
 
