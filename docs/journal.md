@@ -1,6 +1,6 @@
 **06/jul/2026**
 
-a [friend](https://github.com/meet-dharmesh-gandhi) of mine asked me to implement a connection pool ( database connection ). Which i did. a followup that i got was to handle the situation in which if a connection given to a particular request, and the request goes into a inf loop how is the connection retrieved back ? 
+a [friend](https://github.com/meet-dharmesh-gandhi) of mine asked me to design a connection pool ( database connection ). Which i did. a followup that i got was to handle the situation in which if a connection given to a particular request, and the request goes into a inf loop how is the connection retrieved back ? 
 
 We discussed the possibility of using a timer based approch in which i designed a min heap based approch where the top of the heap is the timer that will be going off the earliest. 
 
